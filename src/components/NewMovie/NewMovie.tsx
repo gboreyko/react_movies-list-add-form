@@ -11,43 +11,31 @@ const defaultMovieInfo: Movie = {
   imdbId: '',
 };
 
-type FilledInfo = Partial<Record<keyof Movie, boolean>>;
-
 type Props = {
-  key: number;
   onAdd: (movie: Movie) => void;
 };
+const OPTIONAL_FIELD: keyof Movie = 'description';
 
-const defaultFilledInfo: FilledInfo = {
-  title: false,
-  imgUrl: false,
-  imdbUrl: false,
-  imdbId: false,
-};
-
-export const NewMovie: React.FC<Props> = ({ key, onAdd }) => {
+export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   // Increase the count after succe ssful form submission
   // to reset touched status of all the `Field`s
 
+  const [count] = useState(0);
   const [movieInfo, setMovieInfo] = useState<Movie>(defaultMovieInfo);
-  const [filledInfo, setFilledInfo] = useState<FilledInfo>(defaultFilledInfo);
 
-  const isFilled: boolean = Object.values(filledInfo).every(
-    item => item === true,
-  );
+  function getIsFilled(movie: Movie): boolean {
+    const requiredFields = Object.entries(movie).filter(
+      item => item[0] !== OPTIONAL_FIELD,
+    );
 
-  function handleChange(event: React.ChangeEvent<HTMLFormElement>): void {
-    const field = event.target;
-    const { name, value, required } = field;
+    return requiredFields.every(item => item[1].trim() !== '');
+  }
 
-    if (required) {
-      if (value.trim()) {
-        setFilledInfo(currentFilledInfo => ({
-          ...currentFilledInfo,
-          [name]: true,
-        }));
-      }
-    }
+  const isFilled = getIsFilled(movieInfo);
+
+  function handleChange(changeEvent: React.ChangeEvent<HTMLFormElement>): void {
+    const field = changeEvent.target;
+    const { name, value } = field;
 
     setMovieInfo(currentMovieInfo => ({
       ...currentMovieInfo,
@@ -55,8 +43,8 @@ export const NewMovie: React.FC<Props> = ({ key, onAdd }) => {
     }));
   }
 
-  function handleBlur(event: React.FocusEvent<HTMLFormElement>): void {
-    const field = event.target;
+  function handleBlur(focusEvent: React.FocusEvent<HTMLFormElement>): void {
+    const field = focusEvent.target;
     const { name, value } = field;
 
     setMovieInfo(currentMovieInfo => ({
@@ -65,18 +53,19 @@ export const NewMovie: React.FC<Props> = ({ key, onAdd }) => {
     }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleSubmit(submitEvent: React.FormEvent<HTMLFormElement>): void {
+    submitEvent.preventDefault();
 
     if (isFilled) {
       onAdd(movieInfo);
+      setMovieInfo(defaultMovieInfo);
     }
   }
 
   return (
     <form
       className="NewMovie"
-      key={key}
+      key={count}
       onSubmit={handleSubmit}
       onChange={handleChange}
       onBlur={handleBlur}

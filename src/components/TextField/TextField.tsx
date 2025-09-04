@@ -47,7 +47,7 @@ export const TextField: React.FC<Props> = ({
           value={value}
           name={name}
           required={required}
-          onChange={event => onChange(event.target.value)}
+          onChange={changeEvent => onChange(changeEvent.target.value)}
           onBlur={() => setTouched(true)}
         />
       </div>
