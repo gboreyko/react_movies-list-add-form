@@ -19,6 +19,7 @@ const OPTIONAL_FIELD: keyof Movie = 'description';
 export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   // Increase the count after succe ssful form submission
   // to reset touched status of all the `Field`s
+  const [count, setCount] = useState(0);
 
   const [movieInfo, setMovieInfo] = useState<Movie>(defaultMovieInfo);
 
@@ -58,12 +59,14 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
     if (isFilled) {
       onAdd(movieInfo);
       setMovieInfo(defaultMovieInfo);
+      setCount(prev => prev + 1);
     }
   }
 
   return (
     <form
       className="NewMovie"
+      key={count}
       onSubmit={handleSubmit}
       onChange={handleChange}
       onBlur={handleBlur}
