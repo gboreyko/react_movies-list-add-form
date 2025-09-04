@@ -20,7 +20,6 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   // Increase the count after succe ssful form submission
   // to reset touched status of all the `Field`s
 
-  const [count] = useState(0);
   const [movieInfo, setMovieInfo] = useState<Movie>(defaultMovieInfo);
 
   function getIsFilled(movie: Movie): boolean {
@@ -65,7 +64,6 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   return (
     <form
       className="NewMovie"
-      key={count}
       onSubmit={handleSubmit}
       onChange={handleChange}
       onBlur={handleBlur}
